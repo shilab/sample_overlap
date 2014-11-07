@@ -1,13 +1,17 @@
 from __future__ import print_function
 import sys
 import collections
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('file',nargs='*',help='Files to overlap')
+args=parser.parse_args()
 
 id_dict = collections.OrderedDict()
 pos_dict = {}
 
-
-for x in range (1,len(sys.argv)):
-    with open(sys.argv[x], 'r') as f:
+for x in range (0,len(args.file)):
+    with open(args.file[x],'r') as f:
         header = f.readline().rstrip()
         ids=header.split("\t")
         i=0
@@ -23,14 +27,14 @@ for x in range (1,len(sys.argv)):
             else:
                 pos_dict[id]=str(i)
 
-for x in range (1,len(sys.argv)):
-    with open(sys.argv[x], 'r') as f:
+for x in range (0,len(args.file)):
+    with open(args.file[x],'r') as f:
         pos = []
         for key in id_dict:
             if id_dict[key]==len(sys.argv)-1:
                 ind = pos_dict[key].split(",")
-                pos.append(int(ind[x-1]))
-        with open(str(sys.argv[x]+'.out'),'w') as fo:
+                pos.append(int(ind[x]))
+        with open(str(args.file[x]+'.out'),'w') as fo:
             for line in f:
                 line = line.rstrip()
                 temp = line.split("\t")
