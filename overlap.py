@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sys
 import collections
 
@@ -24,22 +25,17 @@ for x in range (1,len(sys.argv)):
             else:
                 pos_dict[vals]=str(i)
 
-
-#for key in id_dict:
-#    if id_dict[key]==len(sys.argv)-1:
-#        print key + "\t" + str(id_dict[key])
-#        print key + "\t" + pos_dict[key]
-#print id_dict
-
 for x in range (1,len(sys.argv)):
     with open(sys.argv[x], 'r') as f:
-        li = f.readline().rstrip()
-        temp = li.split("\t")
-        pos = []
-        for key in id_dict:
-            if id_dict[key]==len(sys.argv)-1:
-                ind = pos_dict[key].split(",")
-                pos.append(int(ind[x-1]))
-        print pos
-        print [temp[y-1] for y in pos] 
-        
+        with open(str(sys.argv[x]+'.out'),'w') as fo:
+            for line in f:
+                li = line.rstrip()
+                temp = li.split("\t")
+                pos = []
+                for key in id_dict:
+                    if id_dict[key]==len(sys.argv)-1:
+                        ind = pos_dict[key].split(",")
+                        pos.append(int(ind[x-1]))
+                new_line=[temp[y-1] for y in pos] 
+                new_line_str="\t".join(new_line)
+                print(new_line_str, file=fo)
