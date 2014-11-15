@@ -3,6 +3,8 @@ import sys
 import collections
 import argparse
 
+#Overlap samples. Inputs are files, will take any number of files.
+
 def main():
     """Overlap samples"""
     parser = argparse.ArgumentParser()
@@ -12,6 +14,7 @@ def main():
     id_dict = collections.OrderedDict()
     pos_dict = {}
 
+    #Find the overlapping samples
     for arg in range(0, len(args.file)):
         with open(args.file[arg], 'r') as f:
             header = f.readline().rstrip()
@@ -29,6 +32,7 @@ def main():
                 else:
                     pos_dict[id_val] = str(i)
 
+    #print out the overlapping samples from each file
     for arg in range(0, len(args.file)):
         with open(args.file[arg], 'r') as f:
             pos = []
