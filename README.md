@@ -7,6 +7,6 @@ Currently overlap.py only works with tab delimited files.
 
 Usage:
 ```
-overlap.py firstfile secondfile thirdfile
+overlap.py file1 file2 [file3 ...]
 ```
 
