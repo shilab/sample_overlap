@@ -10,3 +10,10 @@ Usage:
 overlap.py file1 file2 [file3 ...]
 ```
 
+Install:
+```
+git clone https://github.com/shilab/sample_overlap
+cd sample_overlap
+python setup.py install
+```
+
