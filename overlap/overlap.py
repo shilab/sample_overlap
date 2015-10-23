@@ -12,10 +12,8 @@ def find_overlaps(filename, id_dict, pos_dict):
         #Read the header and split it
         header = f.readline().rstrip()
         ids = header.split("\t")
-        i = 0
         #Add IDs to the ID count dictionary
-        for id_val in ids:
-            i += 1
+        for counter, id_val in enumerate(ids):
             if id_val in id_dict:
                 id_dict[id_val] += 1
             else:
@@ -23,9 +21,9 @@ def find_overlaps(filename, id_dict, pos_dict):
 
             #Add the position of the IDs to the position dictionary
             if id_val in pos_dict:
-                pos_dict[id_val] += ","+str(i)
+                pos_dict[id_val] += "," + str(counter + 1)
             else:
-                pos_dict[id_val] = str(i)
+                pos_dict[id_val] = str(counter + 1)
 
 def extract_columns(filename, arg, id_dict, pos_dict):
     with open(filename, 'r') as f:
