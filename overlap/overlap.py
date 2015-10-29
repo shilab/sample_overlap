@@ -25,16 +25,19 @@ def find_overlaps(filename, id_dict, pos_dict):
             else:
                 pos_dict[id_val] = str(counter + 1)
 
-def extract_columns(filename, arg, id_dict, pos_dict):
+def extract_columns(filename, keep_columns, numfiles, arg, id_dict, pos_dict):
     with open(filename, 'r') as f:
         pos = []
+        if keep_columns:
+            pos.append(int(keep_columns))
         #Loop through the keys in the count dictionary
         for key in id_dict:
             #Only keep keys that have a count equal to the number of files
-            if id_dict[key] == len(sys.argv)-1:
+            if id_dict[key] == numfiles:
                 ind = pos_dict[key].split(",")
                 #Add the position of the column to the position array
                 pos.append(int(ind[arg]))
+
         #Open the file
         with open(str(filename + '.out'), 'w') as fo:
             #Split each line, reorder using the position array,
@@ -50,6 +53,7 @@ def main():
     """Overlap samples"""
     #Set up command line arguments options
     parser = argparse.ArgumentParser()
+    parser.add_argument('-k','--keepcolumns',nargs='?', help='')
     parser.add_argument('file', nargs='*', help='Files to overlap')
     args = parser.parse_args()
 
@@ -63,7 +67,7 @@ def main():
 
     #print out the overlapping samples from each file
     for arg in range(0, len(args.file)):
-        extract_columns(args.file[arg], arg, id_dict, pos_dict)
+        extract_columns(args.file[arg], args.keepcolumns, len(args.file), arg, id_dict, pos_dict)
 
 if __name__ == '__main__':
     main()
