@@ -8,7 +8,10 @@ Currently overlap.py only works with tab delimited files.
 Usage:
 ```
 overlap.py file1 file2 [file3 ...]
+overlap.py file1 file2 [file3 ...] -k 1
 ```
+
+The ```-k``` flag can be used for keeping any columns that don't have overlapping IDs. If, for example, the first columns of your file contain rownames which you want to keep, but the headers don't match, you can use ```-k 1```.
 
 Install:
 ```
