@@ -1,6 +1,8 @@
 Sample Overlap
 ==============
 
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](http://choosealicense.com/licenses/mit/)
+
 overlap.py filters a set of files based on common column names. overlap.py requires at least two files, but will work with more. overlap.py produces new files with the extension ```.out```.
 
 Currently overlap.py only works with tab delimited files.
