@@ -25,7 +25,7 @@ def find_overlaps(filename, id_dict, pos_dict):
             else:
                 pos_dict[id_val] = str(counter + 1)
 
-def extract_columns(filename, keep_columns, numfiles, arg, id_dict, pos_dict):
+def extract_columns(filename, keep_columns, extension, numfiles, arg, id_dict, pos_dict):
     with open(filename, 'r') as f:
         pos = []
         if keep_columns:
@@ -39,7 +39,11 @@ def extract_columns(filename, keep_columns, numfiles, arg, id_dict, pos_dict):
                 pos.append(int(ind[arg]))
 
         #Open the file
-        with open(str(filename + '.out'), 'w') as fo:
+        if extension:
+            filename = filename + extension + '.out'
+        else:
+            filename = filename + '.out'
+        with open(str(filename), 'w') as fo:
             #Split each line, reorder using the position array,
             #join to string and write to *.out file
             for line in f:
@@ -54,11 +58,15 @@ def main():
     #Set up command line arguments options
     parser = argparse.ArgumentParser()
     parser.add_argument('-k','--keepcolumns',nargs='?', help='')
+    parser.add_argument('-e','--extension',nargs='?', help='')
     parser.add_argument('file', nargs='*', help='Files to overlap')
     args = parser.parse_args()
 
     id_dict = collections.OrderedDict()
     pos_dict = {}
+
+    if '.' not in args.extension:
+        args.extension = '.' + args.extension
 
     #Find the overlapping samples
     #Open each file from the arguments one by one
@@ -67,7 +75,7 @@ def main():
 
     #print out the overlapping samples from each file
     for arg in range(0, len(args.file)):
-        extract_columns(args.file[arg], args.keepcolumns, len(args.file), arg, id_dict, pos_dict)
+        extract_columns(args.file[arg], args.keepcolumns, args.extension, len(args.file), arg, id_dict, pos_dict)
 
 if __name__ == '__main__':
     main()
