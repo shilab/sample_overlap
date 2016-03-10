@@ -65,7 +65,7 @@ def main():
     id_dict = collections.OrderedDict()
     pos_dict = {}
 
-    if '.' not in args.extension:
+    if args.extension and '.' not in args.extension:
         args.extension = '.' + args.extension
 
     #Find the overlapping samples
