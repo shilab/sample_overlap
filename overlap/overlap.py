@@ -53,6 +53,11 @@ def extract_columns(filename, keep_columns, extension, numfiles, arg, id_dict, p
                 new_line_str = "\t".join(new_line)
                 print(new_line_str, file=fo)
 
+def get_extension(extension):
+    if extension and '.' not in extension:
+        extension = '.' + extension
+    return extension
+
 def main():
     """Overlap samples"""
     #Set up command line arguments options
@@ -65,8 +70,7 @@ def main():
     id_dict = collections.OrderedDict()
     pos_dict = {}
 
-    if args.extension and '.' not in args.extension:
-        args.extension = '.' + args.extension
+    args.extension = get_extension(args.extension)
 
     #Find the overlapping samples
     #Open each file from the arguments one by one
