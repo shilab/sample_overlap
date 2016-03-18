@@ -2,15 +2,15 @@ from __future__ import print_function
 import sys
 import collections
 import argparse
+import gzip
 
 #Overlap samples from different files.
 #Takes files from command line, and overlaps based on header and sample IDs.
 #Currently only works on tab-delimited files.
 
-def find_overlaps(filename, id_dict, pos_dict):
-    with open(filename, 'r') as f:
+def find_overlaps(fileobj, id_dict, pos_dict):
         #Read the header and split it
-        header = f.readline().rstrip()
+        header = fileobj.readline().rstrip()
         ids = header.split("\t")
         #Add IDs to the ID count dictionary
         for counter, id_val in enumerate(ids):
@@ -25,8 +25,8 @@ def find_overlaps(filename, id_dict, pos_dict):
             else:
                 pos_dict[id_val] = str(counter + 1)
 
-def extract_columns(filename, keep_columns, extension, numfiles, arg, id_dict, pos_dict):
-    with open(filename, 'r') as f:
+def extract_columns(fileobj, filename, keep_columns, extension, numfiles, arg, id_dict, pos_dict):
+#with open(filename, 'r') as f:
         pos = []
         if keep_columns:
             pos.append(int(keep_columns))
@@ -43,15 +43,23 @@ def extract_columns(filename, keep_columns, extension, numfiles, arg, id_dict, p
             filename = filename + extension + '.out'
         else:
             filename = filename + '.out'
-        with open(str(filename), 'w') as fo:
-            #Split each line, reorder using the position array,
-            #join to string and write to *.out file
-            for line in f:
-                line = line.rstrip()
-                temp = line.split("\t")
-                new_line = [temp[y-1] for y in pos]
-                new_line_str = "\t".join(new_line)
-                print(new_line_str, file=fo)
+        if '.gz' in str(filename):
+            filename = str(filename).replace('.gz','') + '.gz'
+            with gzip.open(str(filename), 'wb') as fo:
+                write_file(fileobj, fo, pos)
+        else:
+            with open(str(filename), 'w') as fo:
+                write_file(fileobj, fo, pos)
+
+def write_file(readfile, writefile, pos):
+    for line in readfile:
+        #Split each line, reorder using the position array,
+        #join to string and write to *.out file
+        line = line.rstrip()
+        temp = line.split("\t")
+        new_line = [temp[y-1] for y in pos]
+        new_line_str = "\t".join(new_line)
+        print(new_line_str, file=writefile)
 
 def get_extension(extension):
     if extension and '.' not in extension:
@@ -75,11 +83,22 @@ def main():
     #Find the overlapping samples
     #Open each file from the arguments one by one
     for arg in range(0, len(args.file)):
-        find_overlaps(args.file[arg], id_dict, pos_dict)
+        if '.gz' in args.file[arg]:
+            with gzip.open(args.file[arg], 'rb') as f:
+                find_overlaps(f, id_dict, pos_dict)
+        else:
+            with open(args.file[arg], 'r') as f:
+                find_overlaps(f, id_dict, pos_dict)
 
     #print out the overlapping samples from each file
     for arg in range(0, len(args.file)):
-        extract_columns(args.file[arg], args.keepcolumns, args.extension, len(args.file), arg, id_dict, pos_dict)
+        if '.gz' in args.file[arg]:
+            with gzip.open(args.file[arg], 'rb') as f:
+                extract_columns(f, args.file[arg], args.keepcolumns, args.extension, len(args.file), arg, id_dict, pos_dict)
+        else:
+            with open(args.file[arg], 'r') as f:
+                extract_columns(f, args.file[arg], args.keepcolumns, args.extension, len(args.file), arg, id_dict, pos_dict)
+
 
 if __name__ == '__main__':
     main()
