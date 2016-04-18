@@ -8,10 +8,21 @@ import gzip
 #Takes files from command line, and overlaps based on header and sample IDs.
 #Currently only works on tab-delimited files.
 
+def find_duplicates(ids):
+    from collections import Counter
+    unique_ids = set(ids)
+    id_count = Counter(ids)
+    for id in unique_ids:
+        if id_count[id] > 1:
+            print(id + ' is not unique')
+    raise Exception('Non-unique IDs in header')
+
 def find_overlaps(fileobj, id_dict, pos_dict):
         #Read the header and split it
         header = fileobj.readline().rstrip()
         ids = header.split("\t")
+        if len(ids) > len(set(ids)):
+            find_duplicates(ids)
         #Add IDs to the ID count dictionary
         for counter, id_val in enumerate(ids):
             if id_val in id_dict:
